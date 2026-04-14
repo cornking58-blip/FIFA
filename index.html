@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#22c55e"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="FIFA"/>
+<link rel="manifest" href="./manifest.json"/>
+<link rel="apple-touch-icon" href="./icons/icon-192.png"/>
+<title>FIFA Турнир</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090f;--surface:#0f1420;--surface2:#161d2e;
+  --border:rgba(255,255,255,.08);--green:#22c55e;--green-dim:rgba(34,197,94,.15);
+  --blue:#3b82f6;--red:#ef4444;--gold:#f59e0b;
+  --text:#e2e8f0;--muted:rgba(226,232,240,.45);--radius:14px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;min-height:100vh;padding:16px;padding-bottom:40px}
+.wrap{max-width:720px;margin:auto;display:flex;flex-direction:column;gap:14px}
+
+/* INSTALL BANNER */
+#installBanner{background:linear-gradient(135deg,#0f2d1a,#0a1929);border:1px solid rgba(34,197,94,.3);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:12px;display:none}
+#installBanner .ico{font-size:28px;flex-shrink:0}
+#installBanner .txt{flex:1}
+#installBanner .txt strong{display:block;font-size:14px;font-weight:800}
+#installBanner .txt span{font-size:12px;color:var(--muted)}
+#installBanner button{padding:8px 14px;border-radius:10px;border:none;font-family:'Manrope',sans-serif;font-weight:800;font-size:13px;cursor:pointer}
+.btn-install{background:var(--green);color:#022c22}
+.btn-close-banner{background:transparent;color:var(--muted);font-size:18px}
+
+/* iOS hint */
+#iosHint{background:linear-gradient(135deg,#0f2d1a,#0a1929);border:1px solid rgba(34,197,94,.3);border-radius:var(--radius);padding:14px 16px;display:none;font-size:13px;line-height:1.6}
+#iosHint strong{color:var(--green)}
+
+.header{text-align:center;padding:24px 16px 16px}
+.header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,8vw,4rem);letter-spacing:3px;line-height:1;background:linear-gradient(135deg,#22c55e,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.title-badge{display:inline-block;margin-top:8px;padding:6px 18px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;transition:.2s}
+.title-badge:hover{border-color:var(--green);color:var(--green)}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:12px}
+.card-title{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;font-size:13px;font-weight:700}
+.tag .del{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:var(--muted);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center}
+.tag .del:hover{background:rgba(239,68,68,.2);color:var(--red)}
+.input-row{display:flex;gap:8px}
+.input-row input{flex:1;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;outline:none;transition:.2s}
+.input-row input:focus{border-color:var(--blue)}
+.input-row input::placeholder{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:12px;border:none;font-family:'Manrope',sans-serif;font-weight:800;font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn-green{background:var(--green);color:#022c22}.btn-green:hover{background:#16a34a}
+.btn-blue{background:var(--blue);color:#020617}.btn-blue:hover{background:#2563eb}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:rgba(255,255,255,.07)}
+.btn-sm{padding:7px 12px;font-size:12px;border-radius:10px}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.mode-tabs{display:flex;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:4px}
+.mode-tab{flex:1;padding:9px 10px;border-radius:9px;border:none;font-family:'Manrope',sans-serif;font-weight:800;font-size:13px;cursor:pointer;transition:.2s;background:transparent;color:var(--muted)}
+.mode-tab.active{background:var(--surface2);color:var(--text)}
+.manual-builder{display:flex;flex-direction:column;gap:10px}
+.manual-pair{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.manual-pair-header{display:flex;justify-content:space-between;align-items:center}
+.manual-pair-header span{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.selects-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+@media(max-width:500px){.selects-row{grid-template-columns:1fr}}
+.selects-row select{padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;outline:none;cursor:pointer}
+.selects-row select:focus{border-color:var(--blue)}
+.pair-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pair-players{font-size:14px;font-weight:700}
+.pair-players span{color:var(--muted);font-weight:600}
+.pair-team{padding:5px 12px;border-radius:999px;background:var(--green-dim);border:1px solid rgba(34,197,94,.3);color:#bbf7d0;font-size:12px;font-weight:800}
+.match-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.match-team{flex:1;min-width:80px;font-weight:800;font-size:14px}
+.match-team:last-of-type{text-align:right}
+.match-score{display:flex;align-items:center;gap:6px}
+.match-score input{width:46px;text-align:center;padding:7px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:22px;outline:none}
+.match-score input:focus{border-color:var(--green)}
+.match-score span{color:var(--muted);font-size:18px;font-weight:800}
+.match-players{width:100%;font-size:11px;color:var(--muted);font-weight:700;display:flex;justify-content:space-between}
+.standings{width:100%;border-collapse:collapse;font-size:13px}
+.standings thead tr{border-bottom:2px solid var(--border)}
+.standings th{padding:8px 10px;text-align:left;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.standings th:not(:first-child){text-align:center}
+.standings td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.standings td:not(:first-child){text-align:center;font-weight:700}
+.standings tr:last-child td{border-bottom:none}
+.rank{width:28px;height:28px;border-radius:50%;background:var(--surface2);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.rank.gold{background:rgba(245,158,11,.2);color:var(--gold);border:1px solid rgba(245,158,11,.4)}
+.rank.silver{background:rgba(148,163,184,.15);color:#94a3b8;border:1px solid rgba(148,163,184,.3)}
+.rank.bronze{background:rgba(180,120,60,.15);color:#c97c3a;border:1px solid rgba(180,120,60,.3)}
+.pts{font-size:16px;color:var(--green);font-weight:800}
+hr{border:none;border-top:1px solid var(--border)}
+.hidden{display:none!important}
+.fade-in{animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- INSTALL BANNER (Android/Desktop) -->
+  <div id="installBanner">
+    <div class="ico">📲</div>
+    <div class="txt">
+      <strong>Установить приложение</strong>
+      <span>Работает без интернета, как обычное приложение</span>
+    </div>
+    <button class="btn-install" id="btnInstall">Установить</button>
+    <button class="btn-close-banner" id="btnCloseBanner">✕</button>
+  </div>
+
+  <!-- iOS HINT -->
+  <div id="iosHint">
+    📲 Чтобы установить на iPhone: нажми <strong>Поделиться</strong> → <strong>На экран «Домой»</strong>
+    <button class="btn btn-ghost btn-sm" style="margin-top:8px;width:100%" onclick="document.getElementById('iosHint').style.display='none'">Понятно</button>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>FIFA 2025</h1>
+    <div class="title-badge" id="titleBadge" onclick="newTitle()">🎲 нажми чтобы сменить</div>
+  </div>
+
+  <!-- PLAYERS -->
+  <div class="card">
+    <div class="card-title">⚽ Игроки</div>
+    <div class="tags" id="playerTags"></div>
+    <div class="input-row">
+      <input id="playerInput" placeholder="Имя игрока" onkeydown="if(event.key==='Enter')addPlayer()"/>
+      <button class="btn btn-ghost btn-sm" onclick="addPlayer()">+ Добавить</button>
+    </div>
+  </div>
+
+  <!-- TEAMS -->
+  <div class="card">
+    <div class="card-title">🏆 Команды FIFA</div>
+    <div class="tags" id="teamTags"></div>
+    <div class="input-row">
+      <input id="teamInput" placeholder="Название команды" onkeydown="if(event.key==='Enter')addTeam()"/>
+      <button class="btn btn-ghost btn-sm" onclick="addTeam()">+ Добавить</button>
+    </div>
+  </div>
+
+  <!-- MODE -->
+  <div class="card">
+    <div class="card-title">🎮 Режим распределения</div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tabAuto" onclick="setMode('auto')">🎲 Авто</button>
+      <button class="mode-tab" id="tabManual" onclick="setMode('manual')">⚙️ Ручной</button>
+    </div>
+    <div id="autoSection">
+      <button class="btn btn-green" onclick="autoGenerate()" style="width:100%;padding:13px;font-size:15px">🎲 Сгенерировать пары</button>
+    </div>
+    <div id="manualSection" class="hidden">
+      <div class="manual-builder" id="manualBuilder"></div>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn btn-ghost btn-sm" onclick="addManualRow()">+ Добавить пару</button>
+        <button class="btn btn-green" onclick="applyManual()" style="flex:1">✅ Применить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAIRS -->
+  <div class="card hidden" id="pairsCard">
+    <div class="card-title">🤝 Пары готовы</div>
+    <div id="pairsDisplay"></div>
+    <hr/>
+    <button class="btn btn-blue" onclick="startMatches()" style="width:100%;padding:12px">▶️ Начать матчи</button>
+  </div>
+
+  <!-- MATCHES -->
+  <div class="card hidden" id="matchesCard">
+    <div class="card-title">⚽ Матчи — вводи счёт</div>
+    <div id="matchesDisplay" style="display:flex;flex-direction:column;gap:10px"></div>
+    <hr/>
+    <button class="btn btn-green" onclick="calcResults()" style="width:100%;padding:13px;font-size:15px">✅ Подсчитать результаты</button>
+  </div>
+
+  <!-- STANDINGS -->
+  <div class="card hidden" id="standingsCard">
+    <div class="card-title">📊 Турнирная таблица</div>
+    <table class="standings">
+      <thead><tr><th>#</th><th>Команда / Игроки</th><th>И</th><th>В</th><th>Н</th><th>П</th><th>Очки</th></tr></thead>
+      <tbody id="standingsBody"></tbody>
+    </table>
+    <hr/>
+    <button class="btn btn-ghost" onclick="resetAll()" style="width:100%">🔄 Новый турнир</button>
+  </div>
+
+</div>
+
+<script>
+// ── PWA INSTALL ──
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').style.display = 'flex';
+});
+
+document.getElementById('btnInstall').onclick = async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBanner').style.display = 'none';
+};
+
+document.getElementById('btnCloseBanner').onclick = () => {
+  document.getElementById('installBanner').style.display = 'none';
+};
+
+// iOS detection
+const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isInStandalone = window.navigator.standalone;
+if (isIos && !isInStandalone) {
+  document.getElementById('iosHint').style.display = 'block';
+}
+
+// ── SERVICE WORKER ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(console.error);
+}
+
+// ── APP LOGIC ──
+const TITLES = [
+  "Ебливый вторник","Жёсткий мат","Разъёб арены","Ебучий камбэк","Лютый разнос",
+  "Пиздец таймингу","Нахуй защиту","Развал кабины","Ебучий прессинг","Жёсткий проёб",
+  "Ебучий автогол","Разнос по щам","Ебучий отскок","Нахуй офсайд","Сраный матч",
+  "Разъёб без шансов","Ебучий финт","Нахуй пас","Ебучий спринт","Разнос схемы",
+  "Ебучий дриблинг","Нахуй тактику","Ебучий удар","Разъёб по факту","Ебучий матчдей",
+  "Разнос нервов","Ебучий момент","Нахуй сейв","Ебучий старт","Разнос без жалости",
+  "Ебучий пресс","Нахуй форму","Ебучий фланг","Разъёб ворот","Ебучий розыгрыш",
+  "Разнос на опыте","Ебучий кросс","Нахуй сейвы","Ебучий стиль","Нахуй линии",
+  "Ебучий отбор","Разнос по делу","Ебучий удар2","Нахуй офсайды","Разъёб финала"
+];
+const DEF_PLAYERS = ["Байков","Моисеев","Калинников","Токмаков","Баранов","Новичков"];
+const DEF_TEAMS   = ["Барса","Реал","Сити","Интер","ПСЖ","Бавария"];
+
+let players=[...DEF_PLAYERS], teams=[...DEF_TEAMS], pairs=[], mode='auto', manualRows=[];
+
+function newTitle(){
+  document.getElementById('titleBadge').textContent = TITLES[Math.floor(Math.random()*TITLES.length)];
+}
+newTitle();
+
+function renderTags(){
+  document.getElementById('playerTags').innerHTML = players.map(p=>
+    `<span class="tag">${p}<button class="del" onclick="removePlayer('${p}')">×</button></span>`).join('');
+  document.getElementById('teamTags').innerHTML = teams.map(t=>
+    `<span class="tag">${t}<button class="del" onclick="removeTeam('${t}')">×</button></span>`).join('');
+  if(mode==='manual') buildManualUI();
+}
+renderTags();
+
+function removePlayer(p){players=players.filter(x=>x!==p);renderTags()}
+function removeTeam(t){teams=teams.filter(x=>x!==t);renderTags()}
+function addPlayer(){const i=document.getElementById('playerInput'),v=i.value.trim();if(v&&!players.includes(v)){players.push(v);i.value='';renderTags()}}
+function addTeam(){const i=document.getElementById('teamInput'),v=i.value.trim();if(v&&!teams.includes(v)){teams.push(v);i.value='';renderTags()}}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('tabAuto').classList.toggle('active',m==='auto');
+  document.getElementById('tabManual').classList.toggle('active',m==='manual');
+  document.getElementById('autoSection').classList.toggle('hidden',m!=='auto');
+  document.getElementById('manualSection').classList.toggle('hidden',m!=='manual');
+  if(m==='manual') buildManualUI();
+}
+
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function autoGenerate(){
+  if(players.length<2){alert('Нужно минимум 2 игрока');return}
+  if(players.length%2!==0){alert('Количество игроков должно быть чётным');return}
+  const needed=players.length/2;
+  if(teams.length<needed){alert(`Нужно минимум ${needed} команд`);return}
+  const sp=shuffle(players),st=shuffle(teams);
+  pairs=[];
+  for(let i=0;i<sp.length;i+=2) pairs.push({team:st[i/2],players:[sp[i],sp[i+1]]});
+  showPairs();
+}
+
+function buildManualUI(){
+  const needed=Math.max(2,players.length/2|0);
+  if(manualRows.length===0) manualRows=Array.from({length:needed},()=>({p1:'',p2:'',team:''}));
+  renderManual();
+}
+function addManualRow(){manualRows.push({p1:'',p2:'',team:''});renderManual()}
+function removeManualRow(i){manualRows.splice(i,1);renderManual()}
+function renderManual(){
+  document.getElementById('manualBuilder').innerHTML=manualRows.map((row,i)=>`
+    <div class="manual-pair">
+      <div class="manual-pair-header">
+        <span>Пара ${i+1}</span>
+        ${manualRows.length>1?`<button class="btn btn-ghost btn-sm" onclick="removeManualRow(${i})">✕</button>`:''}
+      </div>
+      <div class="selects-row">
+        <select onchange="manualRows[${i}].p1=this.value">
+          <option value="">— Игрок 1 —</option>
+          ${players.map(p=>`<option value="${p}" ${row.p1===p?'selected':''}>${p}</option>`).join('')}
+        </select>
+        <select onchange="manualRows[${i}].p2=this.value">
+          <option value="">— Игрок 2 —</option>
+          ${players.map(p=>`<option value="${p}" ${row.p2===p?'selected':''}>${p}</option>`).join('')}
+        </select>
+        <select onchange="manualRows[${i}].team=this.value">
+          <option value="">— Команда —</option>
+          ${teams.map(t=>`<option value="${t}" ${row.team===t?'selected':''}>${t}</option>`).join('')}
+        </select>
+      </div>
+    </div>`).join('');
+}
+function applyManual(){
+  for(let i=0;i<manualRows.length;i++){
+    const r=manualRows[i];
+    if(!r.p1||!r.p2||!r.team){alert(`Пара ${i+1}: заполни все поля`);return}
+    if(r.p1===r.p2){alert(`Пара ${i+1}: игроки должны быть разными`);return}
+  }
+  const allP=manualRows.flatMap(r=>[r.p1,r.p2]);
+  const dupes=allP.filter((v,i)=>allP.indexOf(v)!==i);
+  if(dupes.length){alert(`Игрок "${dupes[0]}" назначен несколько раз`);return}
+  pairs=manualRows.map(r=>({team:r.team,players:[r.p1,r.p2]}));
+  showPairs();
+}
+
+function showPairs(){
+  document.getElementById('pairsDisplay').innerHTML=pairs.map(p=>`
+    <div class="pair-card fade-in">
+      <div class="pair-players">${p.players[0]} <span>+</span> ${p.players[1]}</div>
+      <div class="pair-team">🏆 ${p.team}</div>
+    </div>`).join('');
+  show('pairsCard');hide('matchesCard');hide('standingsCard');
+}
+
+function startMatches(){
+  const matchList=[];
+  for(let i=0;i<pairs.length;i++)
+    for(let j=i+1;j<pairs.length;j++)
+      matchList.push({a:pairs[i],b:pairs[j],id:`m${i}_${j}`});
+  window._matchList=matchList;
+  document.getElementById('matchesDisplay').innerHTML=matchList.map(m=>`
+    <div class="match-card fade-in">
+      <div class="match-team">${m.a.team}</div>
+      <div class="match-score">
+        <input type="number" min="0" max="99" id="${m.id}_a" placeholder="0"/>
+        <span>:</span>
+        <input type="number" min="0" max="99" id="${m.id}_b" placeholder="0"/>
+      </div>
+      <div class="match-team">${m.b.team}</div>
+      <div class="match-players">
+        <span>${m.a.players.join(' + ')}</span>
+        <span>${m.b.players.join(' + ')}</span>
+      </div>
+    </div>`).join('');
+  show('matchesCard');hide('standingsCard');
+  document.getElementById('matchesCard').scrollIntoView({behavior:'smooth'});
+}
+
+function calcResults(){
+  const stats={};
+  pairs.forEach(p=>{stats[p.team]={team:p.team,players:p.players,g:0,w:0,d:0,l:0,pts:0}});
+  let ok=true;
+  window._matchList.forEach(m=>{
+    const va=document.getElementById(`${m.id}_a`).value;
+    const vb=document.getElementById(`${m.id}_b`).value;
+    if(va===''||vb===''){ok=false;return}
+    const sa=parseInt(va),sb=parseInt(vb);
+    const a=stats[m.a.team],b=stats[m.b.team];
+    a.g++;b.g++;
+    if(sa>sb){a.w++;a.pts+=3;b.l++;}
+    else if(sb>sa){b.w++;b.pts+=3;a.l++;}
+    else{a.d++;b.d++;a.pts++;b.pts++;}
+  });
+  if(!ok){alert('Введи счёт во всех матчах');return}
+  const sorted=Object.values(stats).sort((a,b)=>b.pts-a.pts||b.w-a.w);
+  const rc=['gold','silver','bronze'];
+  document.getElementById('standingsBody').innerHTML=sorted.map((s,i)=>`
+    <tr>
+      <td><span class="rank ${rc[i]||''}">${i+1}</span></td>
+      <td><div style="font-weight:800">${s.team}</div><div style="font-size:11px;color:var(--muted)">${s.players.join(' + ')}</div></td>
+      <td>${s.g}</td><td>${s.w}</td><td>${s.d}</td><td>${s.l}</td>
+      <td><span class="pts">${s.pts}</span></td>
+    </tr>`).join('');
+  show('standingsCard');
+  document.getElementById('standingsCard').scrollIntoView({behavior:'smooth'});
+}
+
+function resetAll(){
+  players=[...DEF_PLAYERS];teams=[...DEF_TEAMS];pairs=[];manualRows=[];window._matchList=[];
+  renderTags();newTitle();hide('pairsCard');hide('matchesCard');hide('standingsCard');
+  setMode('auto');window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function show(id){document.getElementById(id).classList.remove('hidden')}
+function hide(id){document.getElementById(id).classList.add('hidden')}
+</script>
+</body>
+</html>
